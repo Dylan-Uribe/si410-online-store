@@ -5,13 +5,19 @@ import com.app.backend.entity.ClientType;
 import com.app.backend.mapper.ClientTypeMapper;
 import com.app.backend.repository.ClientTypeRepository;
 import com.app.backend.service.ClientTypeService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ClientTypeImpl implements ClientTypeService {
 
-    private ClientTypeRepository clientTypeRepository;
+    private final ClientTypeRepository clientTypeRepository;
+
+    public ClientTypeImpl(ClientTypeRepository clientTypeRepository) {
+        this.clientTypeRepository = clientTypeRepository;
+    }
 
     @Override
     public ClientTypeDto getClientTypeById(Long id) {
