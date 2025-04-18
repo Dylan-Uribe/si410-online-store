@@ -2,6 +2,7 @@ package com.app.backend.service.impl;
 
 import com.app.backend.dto.ClientDto;
 import com.app.backend.entity.Client;
+import com.app.backend.entity.ClientType;
 import com.app.backend.exception.ForeignKeyConstraintException;
 import com.app.backend.exception.ResourceNotFoundException;
 import com.app.backend.mapper.ClientMapper;
@@ -55,6 +56,13 @@ public class ClientImpl implements ClientService {
 
         existingClient.setName(clientDto.getName());
         existingClient.setEmail(clientDto.getEmail());
+        existingClient.setPhoneNumber(clientDto.getPhoneNumber());
+        // Verificar y actualizar el tipo de cliente
+        if (clientDto.getClientTypeId() != null) {
+            ClientType clientType = clientTypeRepository.findById(clientDto.getClientTypeId())
+                    .orElseThrow(() -> new ForeignKeyConstraintException("ClientType with ID " + clientDto.getClientTypeId() + " does not exist."));
+            existingClient.setClientType(clientType);
+        }
 
         Client updatedClient = clientRepository.save(existingClient);
         return ClientMapper.toEntityDto(updatedClient);
