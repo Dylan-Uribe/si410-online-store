@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import ClientList from './components/clients/ClientList';
+import ClientTypeList from './components/clients/ClientTypeList'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeTab, setActiveTab] = useState('clients');
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="container py-4">
+      <header className="pb-3 mb-4 border-bottom">
+        <h1 className="fs-4">Client Management System</h1>
+      </header>
+
+      <ul className="nav nav-tabs mb-4">
+        <li className="nav-item">
+          <button 
+            className={`nav-link ${activeTab === 'clients' ? 'active' : ''}`}
+            onClick={() => setActiveTab('clients')}
+          >
+            Clients
+          </button>
+        </li>
+        <li className="nav-item">
+          <button 
+            className={`nav-link ${activeTab === 'clientTypes' ? 'active' : ''}`}
+            onClick={() => setActiveTab('clientTypes')}
+          >
+            Client Types
+          </button>
+        </li>
+      </ul>
+
+      {activeTab === 'clients' ? <ClientList /> : <ClientTypeList />}
+    </div>
+  );
 }
 
-export default App
+export default App;
