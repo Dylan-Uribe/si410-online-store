@@ -66,7 +66,6 @@ const ClientList = () => {
           alert('Error updating client');
         });
     } else {
-      // Create new client
       createClient(newClient)
         .then(() => {
           loadData();

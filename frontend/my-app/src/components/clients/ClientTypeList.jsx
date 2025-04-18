@@ -29,7 +29,6 @@ const ClientTypeList = () => {
 
   const handleFormSubmit = (formData) => {
     if (formData.id) {
-      // Update existing client type
       updateClientType(formData.id, formData)
         .then(() => {
           loadClientTypes();
@@ -41,7 +40,6 @@ const ClientTypeList = () => {
           alert('Error updating client type');
         });
     } else {
-      // Create new client type
       createClientType(formData)
         .then(() => {
           loadClientTypes();
