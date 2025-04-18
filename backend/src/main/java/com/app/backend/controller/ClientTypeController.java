@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/client-types")
+@CrossOrigin
 public class ClientTypeController {
 
     private final ClientTypeService clientTypeService;
