@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getClientsTypes, createClientType, updateClientType, deleteClientType } from '../../services/clientTypeService';
+import ClientTypeForm from './ClientTypeForm';
+import ClientTypeTable from './ClientTypeTable';
 
 const ClientTypeList = () => {
   const [clientTypes, setClientTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newClientType, setNewClientType] = useState({
-    name: '',
-    description: ''
-  });
+  const [currentClientType, setCurrentClientType] = useState(null);
 
   useEffect(() => {
     loadClientTypes();
@@ -29,19 +27,10 @@ const ClientTypeList = () => {
       });
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewClientType({
-      ...newClientType,
-      [name]: value
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (isEditing) {
-      updateClientType(newClientType.id, newClientType)
+  const handleFormSubmit = (formData) => {
+    if (formData.id) {
+      // Update existing client type
+      updateClientType(formData.id, formData)
         .then(() => {
           loadClientTypes();
           resetForm();
@@ -52,7 +41,8 @@ const ClientTypeList = () => {
           alert('Error updating client type');
         });
     } else {
-      createClientType(newClientType)
+      // Create new client type
+      createClientType(formData)
         .then(() => {
           loadClientTypes();
           resetForm();
@@ -66,8 +56,7 @@ const ClientTypeList = () => {
   };
 
   const handleUpdate = (clientType) => {
-    setIsEditing(true);
-    setNewClientType(clientType);
+    setCurrentClientType(clientType);
     setShowForm(true);
     window.scrollTo(0, 0);
   };
@@ -87,9 +76,8 @@ const ClientTypeList = () => {
   };
 
   const resetForm = () => {
-    setNewClientType({ name: '', description: '' });
+    setCurrentClientType(null);
     setShowForm(false);
-    setIsEditing(false);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -101,91 +89,24 @@ const ClientTypeList = () => {
       
       <button 
         className="btn btn-primary mb-4" 
-        onClick={() => {
-          if (showForm && isEditing) {
-            resetForm();
-          } else {
-            setShowForm(!showForm);
-          }
-        }}>
+        onClick={() => setShowForm(!showForm)}
+      >
         {showForm ? 'Cancel' : 'Add Client Type'}
       </button>
       
       {showForm && (
-        <div className="card mb-4">
-          <div className="card-header bg-primary text-white">
-            <h4 className="mb-0">{isEditing ? 'Update Client Type' : 'Create New Client Type'}</h4>
-          </div>
-          <div className="card-body">
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label htmlFor="name" className="form-label">Name</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  id="name"
-                  name="name"
-                  value={newClientType.name}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="description" className="form-label">Description</label>
-                <textarea 
-                  className="form-control" 
-                  id="description"
-                  name="description"
-                  value={newClientType.description || ''}
-                  onChange={handleInputChange}
-                  rows="3"
-                />
-              </div>
-              <button type="submit" className="btn btn-success">
-                {isEditing ? 'Update Client Type' : 'Save Client Type'}
-              </button>
-            </form>
-          </div>
-        </div>
+        <ClientTypeForm 
+          clientType={currentClientType}
+          onSubmit={handleFormSubmit}
+          onCancel={resetForm}
+        />
       )}
       
-      <table className="table table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody className="table-group-divider">
-          {clientTypes.length === 0 ? (
-            <tr>
-              <td colSpan="4" className="text-center">No client types found</td>
-            </tr>
-          ) : (
-            clientTypes.map(type => (
-              <tr key={type.id}>
-                <td>{type.id}</td>
-                <td>{type.name}</td>
-                <td>{type.description || ''}</td>
-                <td>
-                  <button 
-                    className="btn btn-info me-2" 
-                    onClick={() => handleUpdate(type)}>
-                    Update
-                  </button>
-                  <button 
-                    className="btn btn-danger" 
-                    onClick={() => handleDelete(type.id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+      <ClientTypeTable 
+        clientTypes={clientTypes}
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
