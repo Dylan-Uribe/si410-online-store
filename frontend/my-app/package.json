@@ -2,6 +2,7 @@
   "name": "my-app",
   "private": true,
   "version": "0.0.0",
+  "author": {"name": "Dylan Uribe", "email": "a2022112008@estudiantes.upsa.edu.bo"},
   "type": "module",
   "scripts": {
     "dev": "vite",
